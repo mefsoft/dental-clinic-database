@@ -1,0 +1,415 @@
+//Powered by MEFSOFT
+use dental;
+go
+select [dbo].[getmonthly](12,2017) as asd;
+
+//
+USE dental
+GO
+ 
+CREATE PROC usp_getitems
+AS
+BEGIN
+    SELECT Seller_Name as Seller_name, item_inf as Info, price as Price FROM [dbo].[MedicalItem_inf]
+END
+ 
+ 
+EXEC usp_getitems
+
+//
+
+USE dental
+GO
+ 
+CREATE PROC usp_getpatient
+AS
+BEGIN
+    SELECT [Cust_SSNo] as SocialSN, [Cust_Name] + [Cust_FamilyName] as Name, [Cust_Mobile] as Phone FROM [dbo].[Appointcustinfo_Tbl]
+END
+ 
+ 
+EXEC usp_getpatient
+//
+
+
+USE dental
+GO
+ 
+CREATE PROC usp_gettreatment
+AS
+BEGIN
+    SELECT [Treatment] as Treatment FROM [dbo].[Treatment]
+END
+ 
+ 
+EXEC usp_gettreatment
+//
+
+
+CREATE PROC usp_getappointment
+AS
+BEGIN
+    SELECT day([AppDate]) as daytime, [Apptime] as Timeclock, [Pname] as name FROM [dbo].[Appointment]
+END
+ 
+ 
+EXEC usp_getappointment
+
+
+
+//
+
+
+
+
+CREATE PROC usp_getcust
+AS
+BEGIN
+    SELECT [Seller_Name] as SellerName, [seller_Company_Address] as Company, [item_inf] as Item , [price] as Price FROM [dbo].[MedicalItem_inf]
+END
+ 
+ 
+EXEC usp_getcust
+
+//
+
+CREATE PROC usp_getcust
+AS
+BEGIN
+    SELECT [Cust_SSNo] as SSN, [Cust_Name]+[Cust_FamilyName] as Name, [Cust_Addr] as Adress, [Cust_Phone] as Phone FROM [dbo].[Appointcustinfo_Tbl]
+END
+ 
+ 
+EXEC usp_getcust
+
+
+//
+
+
+
+CREATE PROC usp_getcompany
+AS
+BEGIN
+    SELECT [Company_Name] as Name, [Ph_num1] as Phone, [Company_Website] as Website FROM [dbo].[Company_Profile_Tbl]
+END
+ 
+ 
+EXEC usp_getcompany
+
+
+
+
+
+
+//
+
+
+
+
+CREATE PROC usp_getmedicine
+AS
+BEGIN
+    SELECT [Medicine] as Medicine, [mtype] as MedicineType FROM [dbo].[Medicine]
+END
+ 
+ 
+EXEC usp_getmedicine
+
+
+
+
+
+
+//
+
+
+
+
+
+
+CREATE PROC usp_getusers
+AS
+BEGIN
+    SELECT [UType] as Type_ , [Uname] as UserName FROM [dbo].[Login]
+END
+ 
+ 
+EXEC usp_getusers
+
+
+
+//
+
+
+
+
+
+
+
+CREATE PROC usp_getmaterial
+AS
+BEGIN
+    SELECT [meterial] as Material  FROM [dbo].[Meterial]
+END
+ 
+ 
+EXEC usp_getmaterial
+
+///
+
+
+
+
+
+
+
+
+
+ 
+CREATE PROC usp_getpersonel
+AS
+BEGIN
+    SELECT [pname] as PersonelName, [Sex] as Sex, [mobile] as Phone  FROM [dbo].[Personal]
+END
+ 
+ 
+EXEC usp_getpersonel    
+
+
+
+
+//
+
+
+
+ update room set empty = 0 where floor=@floor1 and door = @num
+
+//
+
+
+
+
+USE dental
+GO
+ 
+
+ 
+CREATE PROC usp_setitem(@sellername varchar(100),@company varchar(200),@info varchar(200), 
+@price money, @phone varchar(12),@mail varchar(150), @fax varchar(12), @web varchar(50), @timeb date )
+AS
+BEGIN
+	insert into [dbo].[MedicalItem_inf] values(@sellername,@company,@info,@price,@phone,@mail,@fax,@web,@timeb)
+   
+END
+ 
+EXEC usp_setitem @sellername = mefsofttan,@company = global_,@info = urun, @price = 500, @phone = "0616646" , @mail = asd@windowslivecom, @fax = asddsa, @web = asda, @timeb = "2017-12-12"
+
+//
+
+
+
+
+
+
+
+
+CREATE PROC usp_setpersonel(@pid varchar(100),@pname varchar(200),@dob date, @Blood varchar(12),@Sex bit, @Nationality varchar(12), @email varchar(50), @Address varchar(200),@Place varchar(200),@jdate date,@mobile varchar(200) )
+AS
+BEGIN
+	insert into [dbo].[Personal] values(@pid,@pname,@dob,@Blood,@Sex,@Nationality,@email,@Address,@Place,@jdate,@mobile)
+   
+END
+ 
+EXEC usp_setpersonel @pid = "dfs",@pname=adfs,@dob="2017-12-10",@Blood=black,@Sex=1,@Nationality=asd,@email=dfds,@Address=fgads,@Place=asdafd,@jdate="2017-5-2",@mobile="15646"
+
+
+
+
+/
+
+
+//
+
+
+
+
+
+
+------------------trggers----------
+
+
+
+
+go
+use dental
+go
+create trigger appointdelete on [dbo].[Appointcustinfo_Tbl]
+for delete
+as
+rollback
+print 'You can not delete custumer'
+
+delete Appointcustinfo_Tbl where Apoint_CustID = 00001
+
+
+
+
+
+
+
+
+
+//
+
+
+
+
+
+
+
+go
+use dental
+go
+create trigger logindelete on [dbo].[Login]
+for delete
+as
+rollback
+print 'You can not delete login'
+
+delete [dbo].[Login] where [Id] = 1
+
+
+
+
+
+
+
+//
+
+
+
+
+
+
+
+
+go
+create trigger companydelete on [dbo].[Company_Profile_Tbl]
+for delete
+as
+rollback
+print 'You can not delete Compny Info'
+
+delete [dbo].[Company_Profile_Tbl] where Maker_ID = 121
+
+
+//
+
+
+
+
+
+
+
+-------------------------------------------------
+
+//view
+
+
+
+
+
+
+create view getpatienthist
+as
+select Cust_SSNo,Cust_Name+Cust_FamilyName as Name,	Apptime from [dbo].[Appointcustinfo_Tbl]
+ inner join [dbo].[Appointment] on Appointcustinfo_Tbl.Apoint_CustID = Appointment.AppID
+  inner join [dbo].[p_treatment] 
+on Appointment.AppID = p_treatment.app_id 
+
+
+select * from getpatienthist
+
+
+
+
+
+//
+
+CREATE LOGIN [mefsoft] WITH PASSWORD=N'7ofVKvfNW/LU6cbqhRG+YbNVVYotS+eyS0p3P/FyMcw='----1453, DEFAULT_DATABASE=[master], DEFAULT_LANGUAGE=[us_english], CHECK_EXPIRATION=ON, CHECK_POLICY=ON
+GO
+
+ALTER LOGIN [mefsoft] DISABLE
+GO
+
+//
+
+
+
+
+
+
+
+
+use dental
+
+CREATE LOGIN [user1] WITH PASSWORD=N'Password', DEFAULT_DATABASE=[dental] DEFAULT_LANGUAGE=[us_english], CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF
+GO
+
+USE [dental]
+GO
+CREATE USER [user1] FOR LOGIN [user1] WITH DEFAULT_SCHEMA=[user1]
+GO
+
+USE [dental]
+GO
+CREATE SCHEMA [myschema] AUTHORIZATION [user1]
+GO
+
+
+GO
+USE [dental]
+GO
+
+create table [myschema].asdf(asd int);
+
+//
+
+
+
+
+
+
+
+
+
+
+
+create view getpersonelinfo
+as
+select pname,dob,Address,mobile,img from Personal inner join Image
+on Personal.pid=Image.pid
+
+select * from getpersonelinfo
+
+//
+
+
+
+
+
+
+
+
+
+create view getpersonelinfo
+as
+select * from [dbo].[room] inner join [dbo].[Personal]
+on room.pid= Personel.pid
+
+//
+
+
+
+
+
